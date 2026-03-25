@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandy Pixelz — Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg:    #0d0d0d;
+      --gold:  #c9a84c;
+      --white: #f4f0ea;
+      --muted: #b8b4af;
+      --border: rgba(201,168,76,.18);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans:  'Jost', sans-serif;
+    }
+
+    /* RESPONSIVE BACKGROUND IMAGES */
+
+    /* Default (large screens) */
+    .hero::before {
+    background-image: url('images/background_1.jpeg');
+    }
+
+    /* Tablet (768px - 1024px) */
+    @media (max-width: 1024px) {
+    .hero::before {
+        background-image: url('images/background_2.jpeg');
+    }
+    }
+
+    /* Mobile (up to 768px) */
+    @media (max-width: 768px) {
+    .hero::before {
+        background-image: url('images/background_3.jpeg');
+    }
+    }
+
+
+    /* css for hero overlay */
+
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 100; opacity: .5;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      transition: background .3s, border-color .3s;
+    }
+    nav.scrolled {
+      background: rgba(13,13,13,.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+      letter-spacing: .04em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+    font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+    color: rgba(244,240,234,.75);
+    text-decoration: none;
+    position: relative; transition: color .3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -.3rem; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width .3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* HERO */
+    .hero {
+    position: relative; min-height: 100vh;
+    display: grid; place-items: center;
+    padding: 4rem 4rem 10rem; overflow: hidden;
+    max-height: 100vh;   /* ← add this */
+    }
+
+    .hero::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url('images/background_1.jpeg');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    transition: opacity .5s;
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+    .hero::before {
+        background-image: url('images/background_2.jpeg');
+    }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+    .hero::before {
+        background-image: url('images/background_3.jpeg');
+    }
+    }
+
+    .hero-hidden::before {
+    opacity: 0;
+    }
+
+    .hero::after {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 60%, rgba(201,168,76,.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-frame {
+      position: absolute; width: 120px; height: 120px;
+      border-color: var(--gold); border-style: solid; opacity: .35;
+    }
+    .hero-frame.tl { display: none; }
+    .hero-frame.br { display: none; }
+
+
+    .hero-eyebrow {
+    display: inline-block; font-size: .85rem; letter-spacing: .35em;
+    text-transform: uppercase; color: var(--white); margin-bottom: 1.8rem;
+    opacity: 0; animation: fadeUp .8s .2s forwards;
+    font-weight: 500;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after { content: '—'; margin: 0 .6rem; opacity: .6; }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 8vw, 7rem); font-weight: 300;
+      line-height: 1.05; color: var(--white); margin-bottom: 1.2rem;
+      opacity: 0; animation: fadeUp .9s .4s forwards;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 2rem auto; opacity: 0; animation: fadeUp .7s .6s forwards;
+    }
+    .hero-desc {
+      font-size: 1rem; line-height: 1.9; color: var(--muted);
+      max-width: 600px; margin: 0 auto 2.8rem;
+      opacity: 0; animation: fadeUp .8s .75s forwards;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center;
+      padding: .9rem 2.4rem; font-size: .78rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--bg); background: var(--gold);
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background .3s, transform .2s;
+      opacity: 0; animation: fadeUp .7s .95s forwards;
+    }
+    .hero-cta:hover { background: var(--white); transform: translateY(-2px); }
+    .hero-cta-ghost {
+      display: inline-flex; align-items: center;
+      padding: .9rem 2.4rem; font-size: .78rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--white); background: transparent;
+      border: 1px solid rgba(244,240,234,.25); cursor: pointer; text-decoration: none;
+      margin-left: 1rem; transition: border-color .3s, color .3s, transform .2s;
+      opacity: 0; animation: fadeUp .7s 1.05s forwards;
+    }
+    .hero-cta-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .scroll-hint {
+    position: absolute; bottom: 2.5rem; right: 3rem;
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    color: var(--muted); font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+    opacity: 0; animation: fadeUp .6s 1.3s forwards;
+    }
+    .scroll-hint .line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 1.8s 1.5s infinite;
+    }
+
+    /* HERO GLOW */
+
+    .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(13,13,13,0.55) 0%,
+        rgba(13,13,13,0.45) 40%,
+        rgba(13,13,13,0.75) 80%,
+        rgba(13,13,13,0.98) 100%
+    );
+    z-index: 0;
+    }
+
+    .hero-inner {
+    text-align: center; max-width: 820px; position: relative; z-index: 1;
+    transition: text-shadow .6s ease, opacity .6s ease, transform .6s ease;
+    }
+    .hero-inner.glowing .hero-title {
+    text-shadow: 0 0 40px rgba(201,168,76,.45), 0 0 80px rgba(201,168,76,.2);
+    }
+    .hero-inner.glowing .hero-eyebrow {
+    text-shadow: 0 0 20px rgba(201,168,76,.9), 0 0 40px rgba(201,168,76,.6), 0 0 80px rgba(201,168,76,.3);
+    }
+
+    .hero-inner.scrolled-away {
+    opacity: 0;
+    transform: translateY(-30px);
+    }
+
+    /* SCROLL GALLERY SECTION */
+
+    .scroll-gallery-section { height: 280vh; position: relative; background: transparent; }
+    .scroll-sticky {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 8rem;
+    }
+
+    .gallery-header {
+    position: absolute; top: 6rem; left: 0; right: 0;
+    text-align: center; z-index: 3;
+    opacity: 0; transform: translateY(-15px); pointer-events: none;
+    }
+
+    .gallery-header .g-tag {
+      display: block; font-size: .65rem; letter-spacing: .3em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: .4rem;
+    }
+    .gallery-header h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.5vw, 2rem); font-weight: 300; color: var(--white);
+    }
+    .gallery-header h2 em { font-style: italic; color: var(--gold); }
+
+    .gallery-filters {
+      position: absolute; bottom: 2.2rem; left: 0; right: 0;
+      display: flex; justify-content: center; gap: .8rem; z-index: 3;
+      opacity: 0; pointer-events: none; transition: opacity .6s;
+    }
+    .gallery-filters.visible { opacity: 1; pointer-events: all; }
+    .filter-pill {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      padding: .4rem 1.1rem; border: 1px solid rgba(201,168,76,.3);
+      color: var(--muted); background: transparent; cursor: pointer;
+      transition: all .3s; font-family: var(--sans);
+    }
+    .filter-pill:hover, .filter-pill.active { border-color: var(--gold); color: var(--gold); }
+
+    /* 5x5 GRID — square so it always fits viewport */
+    .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 4px;
+    width: 100vw;
+    height: calc(90vh - 8rem);
+    position: relative; z-index: 2;
+    }
+
+    .grid-cell {
+      overflow: hidden; position: relative;
+      opacity: 0; transform: scale(0.72);
+      will-change: opacity, transform; cursor: pointer;
+      transition: outline .3s;
+    }
+    .grid-cell img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .grid-cell:hover img { transform: scale(1.14); }
+    .cell-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,13,13,.88) 0%, transparent 55%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: flex-end; padding: 6px 8px;
+    }
+    .grid-cell:hover .cell-overlay { opacity: 1; }
+    .cell-cat { font-size: .55rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .grid-cell.featured { outline: 1px solid var(--gold); outline-offset: -1px; }
+
+    /* FLYING IMAGE */
+    .flying-img-wrap {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 50; overflow: hidden;
+    pointer-events: none; opacity: 0;
+    will-change: width, height, left, top, opacity;
+    }
+
+    .flying-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .flying-text {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; padding-bottom: 5rem;
+      background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.1) 40%, transparent 65%);
+    }
+    .fly-tag {
+      font-size: .65rem; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .7rem;
+    }
+    .flying-text h3 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4.5vw, 3.5rem); font-weight: 300;
+      color: var(--white); text-align: center;
+    }
+    .flying-text h3 em { font-style: italic; color: var(--gold); }
+
+    /* KEYFRAMES */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: .7rem; letter-spacing: .08em; }
+      .hero { padding: 7rem 1.5rem 5rem; }
+      .hero-frame { display: none; }
+      .hero-cta-ghost { margin-left: 0; margin-top: .8rem; }
+      .gallery-filters { flex-wrap: wrap; gap: .4rem; padding: 0 1rem; }
+      .filter-pill { font-size: .55rem; padding: .3rem .7rem; }
+    }
+
+    /* css for alternating image and text section */
+
+    /* ALTERNATING IMAGE & TEXT SECTION */
+    .alt-section {
+    width: 100%;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    }
+
+    .alt-box {
+    display: flex;
+    width: 100%;
+    height: 60vh;
+    border-bottom: 1px solid var(--border);
+    }
+    .alt-box:last-child { border-bottom: none; }
+    .alt-box.alt-reverse { flex-direction: row-reverse; }
+
+    .alt-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 5rem;
+    background: var(--bg);
+    }
+
+    .alt-eyebrow {
+    display: block;
+    font-size: .68rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    }
+
+    .alt-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 1.4rem;
+    }
+
+    .alt-para {
+    font-size: .95rem;
+    line-height: 1.9;
+    color: var(--muted);
+    max-width: 480px;
+    }
+
+    .alt-image {
+    flex: 1;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--border);
+    overflow: hidden;
+    }
+    .alt-box.alt-reverse .alt-image {
+    border-left: none;
+    border-right: 1px solid var(--border);
+    }
+
+    .alt-img-placeholder {
+    font-size: .75rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: .5;
+    }
+
+    /* GALLERY SLIDER SECTION */
+    .sp-gallery-section {
+    padding: 80px 0 60px;
+    background: var(--bg);
+    }
+
+    .sp-gallery-heading {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    }
+
+    .sp-gallery-heading .g-tag {
+    display: block;
+    font-size: .65rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: .6rem;
+    }
+
+    .sp-gallery-heading h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    font-weight: 300;
+    color: var(--white);
+    }
+
+    .sp-gallery-heading h2 em {
+    font-style: italic;
+    color: var(--gold);
+    }
+
+    .sp-gallery-slider {
+    display: flex;
+    width: 100%;
+    height: 70vh;
+    gap: 8px;
+    padding: 0 24px;
+    }
+
+    .sp-gallery-card {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: flex 0.7s cubic-bezier(.25,.46,.45,.94), box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    position: relative;
+    }
+
+    .sp-gallery-card:hover {
+    flex: 4;
+    box-shadow: 0 8px 40px rgba(201,168,76,0.25);
+    }
+
+    .sp-gallery-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 2.5rem 2rem 2rem;
+    background: linear-gradient(to top, rgba(13,13,13,.92) 0%, transparent 100%);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .sp-gallery-card:hover .sp-gallery-caption {
+    opacity: 1;
+    transform: translateY(0);
+    }
+
+    .sp-caption-eyebrow {
+    font-size: .62rem;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: .5rem;
+    }
+
+    .sp-caption-title {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: .4rem;
+    }
+
+    .sp-caption-sub {
+    font-size: .75rem;
+    color: rgba(244,240,234,.55);
+    letter-spacing: .08em;
+    }
+
+    @media (max-width: 768px) {
+    .sp-gallery-slider {
+        flex-direction: column;
+        height: auto;
+        padding: 0 16px;
+    }
+    .sp-gallery-card {
+        flex: none;
+        height: 220px;
+    }
+    .sp-gallery-card:hover { flex: none; }
+    .sp-gallery-caption { opacity: 1; transform: translateY(0); }
+    }
+
+
+    /* EXPLORE BUTTON */
+    .explore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.4rem;
+    font-family: var(--sans);
+    font-size: .78rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color .3s, gap .3s;
+    }
+    .explore-btn:hover {
+    color: var(--white);
+    gap: 2rem;
+    }
+    .explore-line {
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: currentColor;
+    transition: width .3s;
+    }
+    .explore-btn:hover .explore-line {
+    width: 60px;
+    }
+
+
+/* Mobile */
+@media (max-width: 768px) {
+  .alt-box, .alt-box.alt-reverse { flex-direction: column; height: auto; }
+  .alt-image { min-height: 280px; border-left: none !important; border-right: none !important; border-top: 1px solid var(--border); }
+  .alt-text { padding: 2.5rem 1.5rem; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+    <circle cx="12" cy="13" r="4"/>
+  </svg>
+  Sandy <span>Pixelz</span>
+</a>
+    <ul class="nav-links">
+  <li><a href="index.html"      class="active">Home</a></li>
+  <li><a href="portfolio.html"      >Portfolio</a></li>
+  <li><a href="packages.html"       >Packages</a></li>
+  <li><a href="about.html"          >About</a></li>
+  <li><a href="contact.html"        >Contact</a></li>
+  </ul>
+  </nav>
+
+  <!-- HERO -->
+  
+    <section class="hero" id="home">
+    <div class="hero-overlay"></div>
+    <div class="hero-frame tl"></div>
+    <div class="hero-frame br"></div>
+    <div class="hero-inner">
+      <span class="hero-eyebrow">Photography &amp; Storytelling</span>
+      <h1 class="hero-title">Eternalizing<br><em>Moments</em></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc">
+        Life is a beautiful sequence of milestones that happen only once but are remembered forever.
+        At Sandy Pixelz, every photograph is a doorway to a story — capturing the silent prayers,
+        the unscripted laughter, and the sacred bonds that make your family <em>yours</em>.
+      </p>
+      <div>
+        <a href="portfolio.html" class="hero-cta">View Portfolio</a>
+       <a href="contact.html" class="hero-cta-ghost">Book a Session</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- SCROLL GALLERY SECTION -->
+  <section class="scroll-gallery-section" id="portfolioSection">
+    <div class="scroll-sticky">
+
+      <div class="gallery-header" id="galleryHeader">
+        <span class="g-tag">Our Work</span>
+        <h2>A Window into <em>Every Story</em></h2>
+      </div>
+
+      <div class="gallery-grid" id="galleryGrid"></div>
+
+      <!-- <div class="gallery-filters" id="galleryFilters">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="Weddings">Weddings</button>
+        <button class="filter-pill" data-filter="Family">Family</button>
+        <button class="filter-pill" data-filter="Newborn">Newborn</button>
+        <button class="filter-pill" data-filter="Events">Events</button>
+      </div> -->
+
+    </div>
+  </section>
+
+  <!-- FLYING IMAGE (fixed overlay, animated by JS) -->
+  <div class="flying-img-wrap" id="flyingImg">
+    <img src="images/camara.jpg" alt="Featured Photography"/>
+    <div class="flying-text" id="flyingText">
+      <span class="fly-tag">Featured Work</span>
+      <h3>Weddings &amp; <em>Celebrations</em></h3>
+    </div>
+  </div>
+
+<!-- alternative image and text section3 -->
+
+<!-- ALTERNATING IMAGE & TEXT SECTION -->
+<section class="alt-section">
+
+  <!-- BOX 1: Text Left, Image Right -->
+  <div class="alt-box">
+    <div class="alt-text">
+      <span class="alt-eyebrow">Our Story</span>
+      <h2 class="alt-title">Every Frame Tells a Story</h2>
+      <p class="alt-para">
+        Photography is more than pressing a shutter — it is the quiet art of witnessing.
+        At Sandy Pixelz, we believe that the most extraordinary images are born from the
+        most ordinary moments: a grandmother's hand resting on a newborn's cheek, the
+        nervous exhale before the first dance, or the way golden light pools on a kitchen
+        floor at the end of a Sunday afternoon. We do not manufacture emotion; we simply
+        stay close enough to catch it when it arrives.
+      </p>
+    </div>
+    <!-- BOX 1 -->
+    <div class="alt-image">
+    <img src="images/Our_Story.jpeg" alt="Our Story" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+
+  </div>
+
+  <!-- BOX 2: Image Left, Text Right -->
+  <div class="alt-box alt-reverse">
+    <div class="alt-text">
+      <span class="alt-eyebrow">Our Approach</span>
+      <h2 class="alt-title">Light, Emotion &amp; Truth</h2>
+      <p class="alt-para">
+        Every session begins long before the camera comes out. We spend time learning
+        your family's rhythms, the inside jokes that spark real laughter, and the quiet
+        rituals that hold your world together. It is this deep listening that transforms
+        a photo shoot into a genuine experience — one where you feel seen, not just
+        photographed. The result is a collection of images that feel less like portraits
+        and more like memories you can hold in your hands.
+      </p>
+    </div>
+    <!-- BOX 2 -->
+    <div class="alt-image">
+    <img src="images/Our_Approach.jpeg" alt="Our Approach" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+  </div>
+
+  <!-- BOX 3: Text Left, Image Right -->
+  <div class="alt-box">
+    <div class="alt-text">
+      <span class="alt-eyebrow">The Experience</span>
+      <h2 class="alt-title">A Session Like No Other</h2>
+      <p class="alt-para">
+        From the moment you reach out to us, you are welcomed into a process built around
+        comfort and intention. We scout locations that complement your story, curate
+        lighting that flatters naturally, and guide you through every pose so nothing
+        ever feels stiff or staged. Children are encouraged to play, couples are invited
+        to simply be together, and newborns are handled with the utmost gentleness —
+        because real beauty lives in ease, not in perfection.
+      </p>
+    </div>
+<!-- BOX 3 -->
+    <div class="alt-image">
+    <img src="images/The_Experience.jpeg" alt="The Experience" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+  </div>
+
+  <!-- BOX 4: Image Left, Text Right -->
+  <div class="alt-box alt-reverse">
+    <div class="alt-text">
+      <span class="alt-eyebrow">Our Promise</span>
+      <h2 class="alt-title">Memories That Last Forever</h2>
+      <p class="alt-para">
+        When you receive your gallery, our hope is that you are transported straight back
+        to that afternoon — the warmth of the light, the sound of the laughter, the weight
+        of that tiny hand in yours. We deliver every image with care, precision, and a
+        commitment to timeless editing that will never feel dated. These photographs are
+        not just art for your wall; they are heirlooms for generations you have not yet met.
+      </p>
+    </div>
+    <!-- BOX 4 -->
+    <div class="alt-image">
+    <img src="images/Our_Promise.jpeg" alt="Our Promise" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+  </div>
+
+</section>
+
+<!-- GALLERY SLIDER SECTION -->
+<section class="sp-gallery-section">
+  <div class="sp-gallery-heading">
+    <span class="g-tag">Our Portfolio</span>
+    <h2>Moments We've <em>Captured</em></h2>
+  </div>
+
+  <div class="sp-gallery-slider">
+
+    <div class="sp-gallery-card" style="background-image: url(images/wedding.jpeg);">
+      <div class="sp-gallery-caption">
+        <span class="sp-caption-eyebrow">Weddings</span>
+        <div class="sp-caption-title">Where Two Stories Become One</div>
+        <div class="sp-caption-sub">The moments before forever begins</div>
+      </div>
+    </div>
+
+    <div class="sp-gallery-card" style="background-image: url(images/family.jpeg);">
+      <div class="sp-gallery-caption">
+        <span class="sp-caption-eyebrow">Family</span>
+        <div class="sp-caption-title">The Ones Who Make Home Feel Real</div>
+        <div class="sp-caption-sub">Bonds that no photograph could fully hold</div>
+      </div>
+    </div>
+
+    <div class="sp-gallery-card" style="background-image: url(images/newborn.jpeg);">
+      <div class="sp-gallery-caption">
+        <span class="sp-caption-eyebrow">Newborn</span>
+        <div class="sp-caption-title">Ten Fingers, Ten Toes, Infinite Love</div>
+        <div class="sp-caption-sub">The smallest hands change everything</div>
+      </div>
+    </div>
+
+    <div class="sp-gallery-card" style="background-image: url(images/events.jpeg);">
+      <div class="sp-gallery-caption">
+        <span class="sp-caption-eyebrow">Events</span>
+        <div class="sp-caption-title">Every Celebration Deserves to Last</div>
+        <div class="sp-caption-sub">Milestones worth remembering forever</div>
+      </div>
+    </div>
+
+    <div class="sp-gallery-card" style="background-image: url(images/portraits.jpeg);">
+      <div class="sp-gallery-caption">
+        <span class="sp-caption-eyebrow">Portraits</span>
+        <div class="sp-caption-title">You, Seen the Way You Deserve</div>
+        <div class="sp-caption-sub">Light, truth, and quiet confidence</div>
+      </div>
+    </div>
+
+  </div>
+
+    <!-- view_all_column -->
+    <div style="text-align: center; margin-top: 3.5rem; padding-bottom: 1rem;">
+    <a href="portfolio.html" class="explore-btn">
+        <span class="explore-line"></span>
+        Explore the Full Collection
+        <span class="explore-line"></span>
+    </a>
+    </div>
+
+</section>
+
+
+<!-- java script -->
+
+  <script>
+
+  window.history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  /* ── Navbar scroll ── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── Hide hero background when scrolled past hero ── */
+  const heroBg = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    const portfolioTop = document.getElementById('portfolioSection').getBoundingClientRect().top;
+    if (portfolioTop <= 0) {
+      heroBg.classList.add('hero-hidden');
+    } else {
+      heroBg.classList.remove('hero-hidden');
+    }
+  }, { passive: true });
+
+  /* ── Hero glow + scroll away ── */
+  const heroInner = document.querySelector('.hero-inner');
+  const heroSection = document.getElementById('home');
+
+  setTimeout(() => heroInner.classList.add('glowing'), 800);
+
+  window.addEventListener('scroll', () => {
+    const heroBottom = heroSection.getBoundingClientRect().bottom;
+    if (heroBottom < window.innerHeight * 0.5) {
+      heroInner.classList.add('scrolled-away');
+      heroInner.classList.remove('glowing');
+    } else {
+      heroInner.classList.remove('scrolled-away');
+      heroInner.classList.add('glowing');
+    }
+  }, { passive: true });
+
+  /* ── Gallery data (25 cells, 4 categories) ──
+     Index 12 = center cell → same seed as flying image  */
+const PHOTOS = [
+  { cat:'Weddings', src:'images/image_1.jpeg'  },
+  { cat:'Weddings',   src:'images/image_2.jpeg'   },
+  { cat:'Newborn',  src:'images/image_3.jpeg'  },
+  { cat:'Pallikuturu',   src:'images/image_4.jpeg'   },
+  { cat:'Haldi', src:'images/image_5.jpeg'  },
+  { cat:'Family',   src:'images/image_6.jpeg'   },
+  { cat:'pre-wedding',  src:'images/image_7.jpeg'  },
+  { cat:'pre-wedding', src:'images/image_8.jpeg'  }, // ← CENTER
+  { cat:'pre-wedding',   src:'images/image_9.jpeg'   },
+  { cat:'Family',   src:'images/image_10.jpeg'   },
+  { cat:'Pellikuturu',  src:'images/image_11.jpeg'  },
+  { cat:'Portraits',   src:'images/image_12.jpeg'    },
+  { cat:'Haldi', src:'images/image_13.jpeg'  },
+  { cat:'pre-wedding',   src:'images/image_14.jpeg'   },
+  { cat:'Weddings',  src:'images/image_15.jpeg'  },
+];
+
+  const grid = document.getElementById('galleryGrid');
+  PHOTOS.forEach((p, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell' + (i === 7 ? ' featured' : '');
+    cell.dataset.cat = p.cat;
+    cell.innerHTML =
+      `<img src="${p.src}" alt="${p.cat}" loading="lazy"/>
+       <div class="cell-overlay"><span class="cell-cat">${p.cat}</span></div>`;
+    grid.appendChild(cell);
+  });
+
+  /* ── Scroll animation ── */
+  (function () {
+    const section = document.getElementById('portfolioSection');
+    const flyWrap = document.getElementById('flyingImg');
+    const flyText = document.getElementById('flyingText');
+    const hdr     = document.getElementById('galleryHeader');
+    const cells   = document.querySelectorAll('.grid-cell');
+    const target  = cells[7]; // center cell = same seed as flying image
+
+    let cellRect = null;
+
+    const clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+    const lerp  = (a,b,t)   => a + (b-a)*t;
+    const eio   = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+    const eo    = t => 1-Math.pow(1-t,3);
+
+    window.addEventListener('resize', () => { cellRect = null; }, { passive:true });
+
+    window.addEventListener('scroll', () => {
+      const rect    = section.getBoundingClientRect();
+      const scrolled = -rect.top;
+
+      if (scrolled < 0) { flyWrap.style.opacity = '0'; return; }
+
+      if (!cellRect) cellRect = target.getBoundingClientRect();
+
+      const total   = section.offsetHeight - window.innerHeight;
+      const raw     = clamp(scrolled / total, 0, 1);
+      const animRaw = clamp(raw / 0.70, 0, 1);
+      const p       = eio(animRaw);
+
+      const vw = window.innerWidth, vh = window.innerHeight;
+
+      const fadeOut = p > 0.84 ? 1-(p-0.84)/0.16 : 1;
+      flyWrap.style.opacity = '' + fadeOut;
+
+      flyWrap.style.width  = lerp(vw, cellRect.width,  p) + 'px';
+      flyWrap.style.height = lerp(vh, cellRect.height, p) + 'px';
+      flyWrap.style.left   = lerp(0,  cellRect.left,   p) + 'px';
+      flyWrap.style.top    = lerp(0,  cellRect.top,    p) + 'px';
+
+      flyText.style.opacity = '' + clamp(1 - animRaw * 3.5, 0, 1);
+
+      const hP = eo(clamp((animRaw - 0.06) / 0.22, 0, 1));
+      hdr.style.opacity   = '' + hP;
+      hdr.style.transform = `translateY(${lerp(-15,0,hP)}px)`;
+
+      cells.forEach((cell, i) => {
+        if (i === 7) {
+          const cp = eo(clamp((animRaw - 0.80) / 0.20, 0, 1));
+          cell.style.opacity   = '' + cp;
+          cell.style.transform = 'scale(1)';
+          return;
+        }
+        const row = Math.floor(i/5), col = i%5;
+        const dist = Math.abs(row-2) + Math.abs(col-2);
+        const startAt = 0.12 + (1 - dist/4) * 0.18;
+        const cp = eo(clamp((animRaw - startAt) / 0.32, 0, 1));
+        cell.style.opacity   = '' + cp;
+        cell.style.transform = `scale(${lerp(0.72,1,cp)})`;
+      });
+
+    }, { passive:true });
+  })();
+
+</script>
+</body>
+</html>

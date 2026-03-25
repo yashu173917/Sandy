@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandy Pixelz — Packages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg:     #0d0d0d;
+      --gold:   #c9a84c;
+      --white:  #f4f0ea;
+      --muted:  #b8b4af;
+      --border: rgba(201,168,76,.18);
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Jost', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 100; opacity: .5;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(13,13,13,.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+      letter-spacing: .04em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(244,240,234,.75); text-decoration: none;
+      position: relative; transition: color .3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -.3rem; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width .3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* HERO */
+    .packages-hero {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: 5rem;
+    }
+    .packages-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url('images/background_1.jpeg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px) brightness(0.4);
+      transform: scale(1.05);
+      z-index: 0;
+    }
+    .packages-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: .63rem; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .9rem;
+      opacity: 0; animation: fadeUp .6s .2s forwards;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300; line-height: 1.1;
+      color: var(--white);
+      opacity: 0; animation: fadeUp .7s .35s forwards;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+    .hero-line {
+      width: 80px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 1.2rem auto 1rem;
+      opacity: 0; animation: fadeUp .6s .5s forwards;
+    }
+    .hero-sub {
+      font-size: .82rem; letter-spacing: .1em; color: var(--muted);
+      opacity: 0; animation: fadeUp .6s .6s forwards;
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-hint {
+      position: absolute; bottom: 1.8rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      opacity: 0; animation: fadeUp .6s 1s forwards;
+    }
+    .scroll-hint span {
+      font-size: .55rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); opacity: .6;
+    }
+    .scroll-dot {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* PACKAGES SECTION */
+    .packages-section {
+      padding: 5rem 4rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* CATEGORY TABS */
+    /* .category-tabs {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 3.5rem;
+      border: 1px solid var(--border);
+      width: fit-content;
+      margin-left: auto; margin-right: auto;
+      overflow: hidden;
+      opacity: 0; animation: fadeUp .6s .2s forwards;
+    }
+    .tab-btn {
+      padding: .7rem 2rem;
+      font-family: var(--sans); font-size: .68rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      background: transparent; border: none;
+      color: var(--muted); cursor: pointer;
+      transition: background .3s, color .3s;
+      position: relative;
+    }
+    .tab-btn + .tab-btn { border-left: 1px solid var(--border); }
+    .tab-btn.active {
+      background: rgba(201,168,76,.12);
+      color: var(--gold);
+    }
+    .tab-btn:hover:not(.active) {
+      color: var(--white); background: rgba(255,255,255,.03);
+    } */
+
+    /* CARDS GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+    }
+
+    /* PACKAGE CARD */
+    .pkg-card {
+      position: relative;
+      display: flex; flex-direction: column;
+      padding: 2.8rem 2.2rem 2.4rem;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(201,168,76,.1);
+      transition: background .4s, border-color .4s, transform .4s;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp .6s forwards;
+    }
+    .pkg-card:nth-child(1) { animation-delay: .1s; }
+    .pkg-card:nth-child(2) { animation-delay: .22s; }
+    .pkg-card:nth-child(3) { animation-delay: .34s; }
+
+    .pkg-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform .5s ease;
+    }
+    .pkg-card:hover::before { transform: scaleX(1); }
+
+    .pkg-card:hover {
+      background: rgba(201,168,76,.04);
+      border-color: rgba(201,168,76,.3);
+      transform: translateY(-6px);
+    }
+
+    /* FEATURED / POPULAR */
+    .pkg-card.featured {
+      background: rgba(201,168,76,.06);
+      border-color: rgba(201,168,76,.35);
+    }
+    .pkg-card.featured::before { transform: scaleX(1); }
+    .popular-badge {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      font-size: .52rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--bg); background: var(--gold);
+      padding: .28rem .7rem;
+    }
+
+    .pkg-icon {
+      width: 44px; height: 44px;
+      border: 1px solid rgba(201,168,76,.3);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.4rem;
+      transition: border-color .3s, background .3s, transform .5s ease;
+    }
+    .pkg-card:hover .pkg-icon {
+      border-color: var(--gold);
+      background: rgba(201,168,76,.1);
+      transform: rotate(8deg) scale(1.1);
+    }
+    .pkg-icon svg { width: 18px; height: 18px; stroke: var(--gold); }
+
+    .pkg-name {
+      font-family: var(--serif);
+      font-size: 1.55rem; font-weight: 300;
+      color: var(--white); margin-bottom: .3rem; line-height: 1.15;
+    }
+    .pkg-name em { font-style: italic; color: var(--gold); }
+
+    .pkg-tagline {
+      font-size: .72rem; letter-spacing: .12em; color: var(--muted);
+      text-transform: uppercase; margin-bottom: 1.6rem;
+    }
+
+    .pkg-divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 1.6rem;
+    }
+
+    .pkg-features {
+      list-style: none;
+      display: flex; flex-direction: column; gap: .7rem;
+      margin-bottom: 2rem; flex: 1;
+    }
+    .pkg-features li {
+      display: flex; align-items: flex-start; gap: .7rem;
+      font-size: .82rem; color: rgba(244,240,234,.8); line-height: 1.5;
+    }
+    .pkg-features li::before {
+      content: '';
+      display: inline-block; flex-shrink: 0;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); margin-top: .5rem;
+    }
+
+    .pkg-price {
+      margin-bottom: 1.6rem;
+    }
+    .pkg-price .amount {
+      font-family: var(--serif);
+      font-size: 2.2rem; font-weight: 300; color: var(--white);
+      line-height: 1;
+    }
+    .pkg-price .currency {
+      font-size: 1rem; color: var(--gold); vertical-align: super; margin-right: .1rem;
+    }
+    .pkg-price .note {
+      font-size: .67rem; letter-spacing: .1em; color: var(--muted);
+      text-transform: uppercase; margin-top: .3rem;
+    }
+
+    .pkg-btn {
+      display: block; width: 100%;
+      padding: .85rem 1rem;
+      text-align: center;
+      font-family: var(--sans); font-size: .7rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); background: transparent;
+      border: 1px solid rgba(201,168,76,.4);
+      text-decoration: none; cursor: pointer;
+      transition: background .3s, color .3s, border-color .3s, letter-spacing .3s;
+    }
+    .pkg-btn:hover {
+      background: var(--gold); color: var(--bg);
+      border-color: var(--gold); letter-spacing: .28em;
+    }
+    .pkg-card.featured .pkg-btn {
+      background: rgba(201,168,76,.15);
+      border-color: var(--gold);
+    }
+    .pkg-card.featured .pkg-btn:hover {
+      background: var(--gold); color: var(--bg);
+    }
+
+    /* ADDONS */
+    .addons-section {
+      padding: 0 4rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem;
+      opacity: 0; animation: fadeUp .6s .1s forwards;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 300; color: var(--white); margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp .6s .2s forwards;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .addons-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+    }
+    .addon-item {
+      padding: 1.5rem 1.4rem;
+      border: 1px solid rgba(201,168,76,.1);
+      background: rgba(255,255,255,.02);
+      transition: background .3s, border-color .3s;
+      opacity: 0; animation: fadeUp .6s forwards;
+      position: relative; overflow: hidden;
+    }
+    .addon-item:nth-child(1) { animation-delay: .1s; }
+    .addon-item:nth-child(2) { animation-delay: .18s; }
+    .addon-item:nth-child(3) { animation-delay: .26s; }
+    .addon-item:nth-child(4) { animation-delay: .34s; }
+    .addon-item:nth-child(5) { animation-delay: .42s; }
+    .addon-item:nth-child(6) { animation-delay: .50s; }
+    .addon-item:nth-child(7) { animation-delay: .58s; }
+    .addon-item:nth-child(8) { animation-delay: .66s; }
+    .addon-item:hover {
+      background: rgba(201,168,76,.05);
+      border-color: rgba(201,168,76,.3);
+    }
+    .addon-item::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width .4s ease;
+    }
+    .addon-item:hover::after { width: 100%; }
+
+    .addon-name {
+      font-size: .8rem; letter-spacing: .08em; color: var(--white);
+      margin-bottom: .3rem;
+    }
+    .addon-price {
+      font-family: var(--serif);
+      font-size: 1.3rem; color: var(--gold);
+    }
+
+    /* KEYFRAMES */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .addons-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: .7rem; letter-spacing: .08em; }
+      .packages-section, .addons-section { padding: 3rem 1.5rem 4rem; }
+      .note-strip { margin: 0 1.5rem 4rem; }
+      .category-tabs { flex-wrap: wrap; }
+    }
+    @media (max-width: 480px) {
+      .addons-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Sandy <span>Pixelz</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="packages.html" class="active">Packages</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="packages-hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Investment &amp; Pricing</p>
+      <h1 class="hero-title">Choose Your <em>Perfect</em> Package</h1>
+      <div class="hero-line"></div>
+      <p class="hero-sub">Tailored photography experiences for every milestone</p>
+    </div>
+    <div class="scroll-hint">
+      <span>Explore</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section class="packages-section">
+
+    <!-- TABS -->
+    <!-- <div class="category-tabs">
+      <button class="tab-btn active" onclick="filterCards('all', this)">All</button>
+      <button class="tab-btn" onclick="filterCards('wedding', this)">Wedding</button>
+      <button class="tab-btn" onclick="filterCards('portrait', this)">Portrait</button>
+      <button class="tab-btn" onclick="filterCards('event', this)">Events</button>
+    </div> -->
+
+    <!-- CARDS -->
+    <div class="cards-grid" id="cardsGrid">
+
+      <!-- SILVER -->
+      <div class="pkg-card" data-category="wedding portrait event">
+        <div class="pkg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="pkg-name">Silver <em>Essentials</em></div>
+        <div class="pkg-tagline">Perfect for intimate sessions</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>2-hour photography session</li>
+          <li>1 location of your choice</li>
+          <li>50 hand-edited digital images</li>
+          <li>Online gallery for 60 days</li>
+          <li>Print release included</li>
+        </ul>
+        <div class="pkg-price">
+          <div class="amount"><span class="currency">₹</span>12,000</div>
+          <div class="note">Starting price · GST extra</div>
+        </div>
+        <a href="contact.html" class="pkg-btn">Book Now</a>
+      </div>
+
+      <!-- GOLD — FEATURED -->
+      <div class="pkg-card" data-category="wedding portrait event">
+        <div class="pkg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="pkg-name">Gold <em>Signature</em></div>
+        <div class="pkg-tagline">Our most loved experience</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>5-hour full-day photography</li>
+          <li>Up to 2 locations</li>
+          <li>150 hand-edited digital images</li>
+          <li>1 premium album (20 spreads)</li>
+          <li>Online gallery for 1 year</li>
+          <li>Sneak peek within 48 hours</li>
+        </ul>
+        <div class="pkg-price">
+          <div class="amount"><span class="currency">₹</span>28,000</div>
+          <div class="note">Starting price · GST extra</div>
+        </div>
+        <a href="contact.html" class="pkg-btn">Book Now</a>
+      </div>
+
+      <!-- PLATINUM -->
+      <div class="pkg-card" data-category="wedding">
+        <div class="pkg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="6"/>
+            <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+          </svg>
+        </div>
+        <div class="pkg-name">Platinum <em>Legacy</em></div>
+        <div class="pkg-tagline">Full wedding coverage, forever</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>Full-day coverage (10+ hours)</li>
+          <li>Two photographers</li>
+          <li>300+ curated digital images</li>
+          <li>Luxury flush-mount album</li>
+          <li>Cinematic highlight reel</li>
+          <li>Lifetime gallery access</li>
+          <li>Complimentary engagement shoot</li>
+        </ul>
+        <div class="pkg-price">
+          <div class="amount"><span class="currency">₹</span>65,000</div>
+          <div class="note">Starting price · GST extra</div>
+        </div>
+        <a href="contact.html" class="pkg-btn">Book Now</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ADD-ONS -->
+  <section class="addons-section">
+    <p class="section-label">Enhance Your Package</p>
+    <h2 class="section-title">Optional <em>Add-ons</em></h2>
+
+    <div class="addons-grid">
+      <div class="addon-item">
+        <div class="addon-name">Extra Hour of Coverage</div>
+        <div class="addon-price">₹3,500</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Second Photographer</div>
+        <div class="addon-price">₹8,000</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Drone / Aerial Shots</div>
+        <div class="addon-price">₹6,000</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Canvas / Framed Print</div>
+        <div class="addon-price">₹2,500</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Reels / Video Highlights</div>
+        <div class="addon-price">₹12,000</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Rush Delivery (48 hrs)</div>
+        <div class="addon-price">₹4,000</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Premium Photo Book</div>
+        <div class="addon-price">₹5,500</div>
+      </div>
+      <div class="addon-item">
+        <div class="addon-name">Extended Gallery (2 yrs)</div>
+        <div class="addon-price">₹1,500</div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    window.history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    // function filterCards(category, btn) {
+    //   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    //   btn.classList.add('active');
+
+    //   document.querySelectorAll('.pkg-card').forEach(card => {
+    //     const cats = card.dataset.category || '';
+    //     if (category === 'all' || cats.includes(category)) {
+    //       card.style.display = 'flex';
+    //     } else {
+    //       card.style.display = 'none';
+    //     }
+    //   });
+    // }
+  </script>
+
+</body>
+</html>

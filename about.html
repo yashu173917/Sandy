@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sandy Pixelz — About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg:     #0d0d0d;
+      --gold:   #c9a84c;
+      --white:  #f4f0ea;
+      --muted:  #b8b4af;
+      --border: rgba(201,168,76,.18);
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Jost', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 100; opacity: .5;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(13,13,13,.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+      letter-spacing: .04em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(244,240,234,.75); text-decoration: none;
+      position: relative; transition: color .3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -.3rem; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width .3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* ══════════════════════════════════════════
+       SECTION 1 — HERO
+       Same fixed-background technique as index
+    ══════════════════════════════════════════ */
+    .about-hero {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 6rem 2rem 2rem;
+    }
+
+    /* Fixed background — mirrors index.html */
+    .about-hero::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url('images/background_1.jpeg');
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+    }
+    @media (max-width: 1024px) {
+      .about-hero::before { background-image: url('images/background_2.jpeg'); }
+    }
+    @media (max-width: 768px) {
+      .about-hero::before { background-image: url('images/background_3.jpeg'); }
+    }
+
+    /* Gradient overlay — same as index hero-overlay */
+    .about-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(13,13,13,0.55) 0%,
+        rgba(13,13,13,0.45) 40%,
+        rgba(13,13,13,0.75) 80%,
+        rgba(13,13,13,0.98) 100%
+      );
+      z-index: 0;
+    }
+
+    .about-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* GLASS CARD */
+    .hero-card {
+      position: relative; z-index: 2;
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      /* Fixed height — no overflow scroll */
+      height: calc(100vh - 8rem);
+      max-height: 680px;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid rgba(201,168,76,.22);
+      box-shadow: 0 32px 80px rgba(0,0,0,.7),
+                  0 0 0 1px rgba(255,255,255,.04),
+                  0 0 60px rgba(201,168,76,.08);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp .9s .3s forwards;
+    }
+
+    /* LEFT — image */
+    .hero-image {
+      flex: 1; position: relative; overflow: hidden;
+    }
+    .hero-image img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top; display: block;
+      filter: brightness(0.88) contrast(1.05) saturate(0.85);
+      transition: transform 10s ease;
+    }
+    .hero-card:hover .hero-image img { transform: scale(1.06); }
+    .hero-image-overlay {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, transparent 40%, rgba(13,13,13,.75) 100%),
+        linear-gradient(to top, rgba(13,13,13,.6) 0%, transparent 40%),
+        linear-gradient(to bottom, rgba(13,13,13,.25) 0%, transparent 30%);
+    }
+    .hero-image::after {
+      content: '';
+      position: absolute; top: 10%; left: 0;
+      width: 1px; height: 80%;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      opacity: .4;
+    }
+    .hero-image-tag {
+      position: absolute; bottom: 2rem; left: 2rem;
+      font-size: .58rem; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--gold); display: flex; align-items: center; gap: .6rem;
+    }
+    .hero-image-tag::before {
+      content: ''; display: inline-block;
+      width: 4px; height: 4px;
+      background: var(--gold); border-radius: 50%; opacity: .8;
+    }
+
+    /* RIGHT — content, NO overflow scroll */
+    .hero-content {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 2.4rem 2.6rem;
+      background: rgba(13,13,13,.35);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-left: 1px solid rgba(201,168,76,.12);
+      /* Removed overflow-y: auto — content is always fully visible */
+    }
+
+    .about-eyebrow {
+      font-size: .63rem; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .6rem;
+      opacity: 0; animation: fadeUp .6s .5s forwards;
+    }
+    .about-name {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+      font-weight: 300; line-height: 1.1; color: var(--white);
+      margin-bottom: .35rem;
+      opacity: 0; animation: fadeUp .6s .6s forwards;
+    }
+    .about-name em { font-style: italic; color: var(--gold); }
+    .about-role {
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.1rem;
+      opacity: 0; animation: fadeUp .6s .65s forwards;
+    }
+    .about-divider {
+      width: 50px; height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 1.1rem;
+      opacity: 0; animation: fadeUp .6s .7s forwards;
+    }
+    .about-bio {
+      font-size: .85rem; line-height: 1.8; color: rgba(244,240,234,.78);
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp .6s .75s forwards;
+    }
+    .about-bio + .about-bio { animation-delay: .85s; }
+
+    .stats-row {
+      display: flex;
+      border: 1px solid rgba(201,168,76,.15);
+      margin-top: 1.4rem;
+      opacity: 0; animation: fadeUp .6s .95s forwards;
+    }
+    .stat-item {
+      flex: 1; padding: 1rem; text-align: center;
+      border-right: 1px solid rgba(201,168,76,.12); transition: background .3s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: rgba(201,168,76,.06); }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: 1.7rem; font-weight: 300; color: var(--gold); line-height: 1;
+    }
+    .stat-label {
+      font-size: .56rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); margin-top: .25rem;
+    }
+
+    /* ══════════════════════════════════════════
+       SECTION 2 — TEAM
+       Own background image + team photo
+    ══════════════════════════════════════════ */
+    .team-section {
+      position: relative;
+      padding: 8rem 2rem 7rem;
+      display: flex; flex-direction: column; align-items: center;
+      overflow: hidden;
+    }
+
+    /* Team section own background */
+    .team-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url('images/background_1.jpeg'); /* ← swap to your team bg */
+      background-size: cover;
+      background-position: center;
+      filter: blur(4px) brightness(0.25);
+      transform: scale(1.04);
+      z-index: 0;
+    }
+
+    /* Dark gradient over it for readability */
+    .team-section::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(13,13,13,.7) 0%, rgba(13,13,13,.5) 50%, rgba(13,13,13,.8) 100%),
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(201,168,76,.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* All team content sits above the bg */
+    .team-inner {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1000px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .team-eyebrow {
+      font-size: .63rem; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem; text-align: center;
+    }
+    .team-heading {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      font-weight: 300; line-height: 1.1;
+      color: var(--white); text-align: center; margin-bottom: .6rem;
+    }
+    .team-heading em { font-style: italic; color: var(--gold); }
+    .team-subline {
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); text-align: center; margin-bottom: 1rem;
+    }
+    .team-rule {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 0 auto 3.5rem;
+    }
+
+    /* Main card */
+    .team-card {
+      width: 100%;
+      border: 1px solid rgba(201,168,76,.22);
+      border-radius: 2px; overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,.65), 0 0 40px rgba(201,168,76,.06);
+    }
+    .team-card::before {
+      content: ''; display: block; height: 2px;
+      background: linear-gradient(to right, transparent 0%, var(--gold) 40%, var(--gold) 60%, transparent 100%);
+      opacity: .55;
+    }
+
+    /* Image + copy side by side */
+    .team-body {
+      display: flex;
+    }
+
+    /* Team photo — left half */
+    .team-photo {
+      flex: 1;
+      position: relative; overflow: hidden;
+      min-height: 440px;
+    }
+    .team-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+      filter: brightness(0.85) saturate(0.9);
+      transition: transform 10s ease;
+    }
+    .team-card:hover .team-photo img { transform: scale(1.04); }
+    .team-photo-overlay {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, transparent 55%, rgba(13,13,13,.8) 100%),
+        linear-gradient(to top, rgba(13,13,13,.5) 0%, transparent 40%);
+    }
+    .team-photo-tag {
+      position: absolute; bottom: 1.8rem; left: 1.8rem;
+      font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); display: flex; align-items: center; gap: .6rem;
+    }
+    .team-photo-tag::before {
+      content: ''; display: inline-block;
+      width: 4px; height: 4px;
+      background: var(--gold); border-radius: 50%; opacity: .8;
+    }
+
+    /* Copy — right half */
+    .team-copy {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 3rem 3rem;
+      background: rgba(13,13,13,.45);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-left: 1px solid rgba(201,168,76,.12);
+    }
+
+    .team-col-label {
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .9rem;
+    }
+    .team-copy-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+      font-weight: 300; line-height: 1.2; color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+    .team-copy-heading em { font-style: italic; color: var(--gold); }
+    .team-copy-divider {
+      width: 40px; height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin-bottom: 1.2rem;
+    }
+    .team-copy p {
+      font-size: .87rem; line-height: 1.9; color: rgba(244,240,234,.78);
+      margin-bottom: 1rem;
+    }
+    .team-copy p:last-child { margin-bottom: 0; }
+
+    /* Three pillars below */
+    .team-pillars {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(201,168,76,.12);
+    }
+    .pillar {
+      padding: 2rem 2.2rem;
+      border-right: 1px solid rgba(201,168,76,.1);
+      background: rgba(13,13,13,.4);
+      backdrop-filter: blur(10px);
+      transition: background .3s;
+    }
+    .pillar:last-child { border-right: none; }
+    .pillar:hover { background: rgba(201,168,76,.05); }
+    .pillar-icon {
+      width: 24px; height: 24px;
+      color: var(--gold); opacity: .8; margin-bottom: .8rem;
+    }
+    .pillar-title {
+      font-family: var(--serif);
+      font-size: 1.05rem; font-weight: 400; color: var(--white); margin-bottom: .4rem;
+    }
+    .pillar-desc {
+      font-size: .76rem; line-height: 1.75; color: var(--muted);
+    }
+
+    /* scroll-reveal */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: .1s; }
+    .reveal-d2 { transition-delay: .2s; }
+    .reveal-d3 { transition-delay: .3s; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: .7rem; letter-spacing: .08em; }
+
+      .about-hero { height: auto; min-height: 100vh; padding: 5rem 1rem 2rem; }
+      .hero-card { flex-direction: column; height: auto; max-height: none; }
+      .hero-image { flex: none; height: 35vh; width: 100%; }
+      .hero-content { padding: 2rem 1.5rem; border-left: none; border-top: 1px solid rgba(201,168,76,.12); }
+
+      .team-section { padding: 5rem 1rem 4rem; }
+      .team-body { flex-direction: column; }
+      .team-photo { min-height: 280px; flex: none; }
+      .team-photo-overlay { background: linear-gradient(to top, rgba(13,13,13,.6) 0%, transparent 50%); }
+      .team-copy { padding: 2rem 1.5rem; border-left: none; border-top: 1px solid rgba(201,168,76,.12); }
+      .team-pillars { grid-template-columns: 1fr; }
+      .pillar { border-right: none; border-bottom: 1px solid rgba(201,168,76,.1); }
+      .pillar:last-child { border-bottom: none; }
+    }
+    @media (max-width: 400px) {
+      .hero-image { height: 25vh; }
+      .hero-content { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Sandy <span>Pixelz</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="packages.html">Packages</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ SECTION 1: HERO (unchanged content, fixed bg + no scroll) ══ -->
+  <section class="about-hero">
+    <div class="about-hero-overlay"></div>
+
+    <div class="hero-card">
+      <div class="hero-image">
+        <img src="images/about.jpeg" alt="Sandy Pixelz Photographer"/>
+        <div class="hero-image-overlay"></div>
+        <span class="hero-image-tag">Sandy Pixelz — The Artist</span>
+      </div>
+      <div class="hero-content">
+        <p class="about-eyebrow">The Story Behind the Lens</p>
+        <h1 class="about-name">Hello, I'm <em>Sandy</em></h1>
+        <p class="about-role">Photographer &amp; Visual Storyteller · Hyderabad</p>
+        <div class="about-divider"></div>
+        <p class="about-bio">
+          I believe every person carries a universe of stories worth telling. Armed with a camera and an obsession for light, I've spent years learning to freeze those fleeting moments that words simply can't capture — a nervous laugh before the vows, the golden hour that lasts only seconds, the quiet joy of a family simply being together.
+        </p>
+        <p class="about-bio">
+          Based out of Hyderabad, I travel across India to craft images that feel timeless. My style blends cinematic depth with intimate warmth — never over-posed, always honest.
+        </p>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-number">6+</div>
+            <div class="stat-label">Years of Experience</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">300+</div>
+            <div class="stat-label">Sessions Shot</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">12+</div>
+            <div class="stat-label">Cities Covered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 2: TEAM ══ -->
+  <section class="team-section">
+    <div class="team-inner">
+
+      <p class="team-eyebrow reveal">The People Behind the Work</p>
+      <h2 class="team-heading reveal reveal-d1">Meet the <em>Team</em></h2>
+      <p class="team-subline reveal reveal-d2">A collective of creators · Hyderabad</p>
+      <div class="team-rule reveal reveal-d3"></div>
+
+      <div class="team-card reveal">
+
+        <!-- Image left + Copy right -->
+        <div class="team-body">
+
+          <!-- Team photo -->
+          <div class="team-photo">
+            <img src="images/about.jpeg" alt="Sandy Pixelz Team"/>  <!-- ← swap to your team image -->
+            <div class="team-photo-overlay"></div>
+            <span class="team-photo-tag">Sandy Pixelz — The Team</span>
+          </div>
+
+          <!-- Copy -->
+          <div class="team-copy">
+            <p class="team-col-label">The People Behind Every Frame</p>
+            <h3 class="team-copy-heading">One Vision,<br><em>Many Hands</em></h3>
+            <div class="team-copy-divider"></div>
+            <p>
+              Sandy Pixelz is a close-knit team of photographers, light artists, and post-production specialists united by a single belief — every moment deserves to be remembered exactly as it felt.
+            </p>
+            <p>
+              We bring complementary eyes and instincts to every project, so no nuance goes unnoticed and no story is left half-told. From the first creative conversation to the final delivered gallery, we function as one — in spirit and in practice.
+            </p>
+            <p>
+              Whether it's an intimate ceremony or a large editorial spread, the whole team shows up. That collective care is what makes the difference between an image and a memory.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Three pillars -->
+        <div class="team-pillars">
+          <div class="pillar">
+            <svg class="pillar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <div class="pillar-title">Honest Vision</div>
+            <div class="pillar-desc">We don't stage emotion — we read a room, anticipate a moment, and let reality do the rest.</div>
+          </div>
+          <div class="pillar">
+            <svg class="pillar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <div class="pillar-title">Collective Energy</div>
+            <div class="pillar-desc">Every shoot benefits from the combined experience and instincts of the whole team — not just one pair of eyes.</div>
+          </div>
+          <div class="pillar">
+            <svg class="pillar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <div class="pillar-title">Uncompromising Craft</div>
+            <div class="pillar-desc">We hold every image to the same exacting standard — technically precise, emotionally resonant, timeless.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    // Scroll-reveal for team section
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
