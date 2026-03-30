@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="description" content="Browse the Sandy Pixelz portfolio — weddings, pre-weddings, family portraits, newborns, and events captured in Hyderabad."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Portfolio — Sandy Pixelz"/>
+  <meta property="og:description" content="Browse the Sandy Pixelz portfolio — weddings, pre-weddings, family portraits, newborns, and events captured in Hyderabad."/>
+  <meta property="og:image" content="https://sandypixelz.com/images/image_1.webp"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Portfolio — Sandy Pixelz"/>
+  <meta name="twitter:description" content="Browse the Sandy Pixelz portfolio — weddings, pre-weddings, family portraits, newborns, and events captured in Hyderabad."/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sandy Pixelz — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -345,8 +354,6 @@
     /* mobile */
     @media (max-width: 768px) {
       nav { padding: 1.2rem 1.5rem; }
-      .nav-links { gap: 1rem; }
-      .nav-links a { font-size: .7rem; }
       .container { width: 95vw; height: 520px; }
       .slide .item:nth-child(3) { left: 55%; }
       .slide .item:nth-child(4) { left: calc(55% + 160px); }
@@ -356,6 +363,47 @@
       .slide .item:nth-child(2) .content { left: 30px; width: 280px; }
       .content .name { font-size: 2rem; }
     }
+
+    
+    /* ── HAMBURGER (mobile only) ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: transparent; border: none; cursor: pointer; padding: .3rem;
+      z-index: 501;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--white); transition: transform .3s, opacity .3s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+
+    @media (max-width: 768px) {
+      .nav-hamburger { display: flex; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 0;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 70vw; max-width: 280px;
+        background: rgba(13,13,13,.97); backdrop-filter: blur(16px);
+        padding: 5rem 2.5rem 2rem; z-index: 499;
+        border-left: 1px solid var(--border);
+        transition: transform .35s cubic-bezier(.25,.46,.45,.94);
+        transform: translateX(100%);
+      }
+      .nav-links.open { display: flex; transform: translateX(0); }
+      .nav-links li { border-bottom: 1px solid var(--border); }
+      .nav-links a { display: block; padding: 1rem 0; font-size: .85rem; letter-spacing: .12em; }
+      .nav-overlay {
+        display: none; position: fixed; inset: 0; z-index: 498;
+        background: rgba(0,0,0,.4);
+      }
+      .nav-overlay.open { display: block; }
+    }
+
+
+
   </style>
 </head>
 <body>
@@ -364,22 +412,26 @@
   <div class="page-bg-overlay"></div>
 
   <!-- NAVBAR -->
-  <nav>
+  <nav id="navbar">
     <a href="index.html" class="nav-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem;vertical-align:middle;margin-bottom:.15rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
         <circle cx="12" cy="13" r="4"/>
       </svg>
       Sandy <span>Pixelz</span>
     </a>
-    <ul class="nav-links">
+    <button id="navHamburger" class="nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+  </nav>
+     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="packages.html">Packages</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-  </nav>
+    </button>
+    <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- SLIDER -->
   <div class="container">
@@ -457,18 +509,101 @@
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
 
+    const slide = document.querySelector('.slide');
     const next = document.querySelector('.next');
     const prev = document.querySelector('.prev');
 
-    next.addEventListener('click', function () {
+    function goNext() {
       let items = document.querySelectorAll('.item');
-      document.querySelector('.slide').appendChild(items[0]);
-    });
+      slide.appendChild(items[0]);
+    }
+    function goPrev() {
+      let items = document.querySelectorAll('.item');
+      slide.prepend(items[items.length - 1]);
+    }
 
-    prev.addEventListener('click', function () {
-      let items = document.querySelectorAll('.item');
-      document.querySelector('.slide').prepend(items[items.length - 1]);
+    next.addEventListener('click', goNext);
+    prev.addEventListener('click', goPrev);
+
+    // Auto-advance every 5 seconds
+    // let autoPlay = setInterval(goNext, 7000);
+
+    // // Pause on hover, resume on leave
+    // slide.addEventListener('mouseenter', () => clearInterval(autoPlay));
+    // slide.addEventListener('mouseleave', () => { autoPlay = setInterval(goNext, 7000); });
+  </script>
+
+
+  <!-- view mode for editors (add ?editor=true to URL or click "Edit Gallery" links below each gallery) — this will show the editor badge and add "Edit Gallery" buttons next to each "View Gallery" link for easy access to edit pages. -->
+  <script>
+  (function(){
+    const isEditor = new URLSearchParams(location.search).has('editor')
+                  || sessionStorage.getItem('spEditor') === 'true';
+    if (!isEditor) return;
+
+    sessionStorage.setItem('spEditor','true');
+
+    // Editor badge
+    const badge = document.createElement('div');
+    badge.innerHTML = '✏️ Editor Mode — <a href="contact.html" onclick="sessionStorage.removeItem(\'spEditor\')" style="color:#c9a84c;">Exit</a>';
+    Object.assign(badge.style, {
+      position:'fixed', top:'70px', right:'20px', zIndex:'9999',
+      background:'rgba(201,168,76,.15)', border:'1px solid rgba(201,168,76,.4)',
+      color:'#f4f0ea', padding:'.5rem 1rem', fontSize:'.7rem',
+      letterSpacing:'.12em', textTransform:'uppercase', fontFamily:'Jost,sans-serif'
     });
+    document.body.appendChild(badge);
+
+    // Map each "View Gallery" link to its gallery page
+    // Adjust these hrefs to match YOUR actual links
+  const galleryLinks = document.querySelectorAll('a[href*="portfolio/"]');
+  galleryLinks.forEach(link => {
+    const editBtn = document.createElement('a');
+    editBtn.textContent = '✏ Edit Gallery';
+    editBtn.href = link.href + (link.href.includes('?') ? '&' : '?') + 'editor=true';
+    Object.assign(editBtn.style, {
+      display:'none', marginLeft:'1rem',
+      padding:'.55rem 1.2rem', fontSize:'.65rem', letterSpacing:'.16em',
+      textTransform:'uppercase', color:'#0d0d0d', background:'#c9a84c',
+      textDecoration:'none', fontFamily:'Jost,sans-serif',
+      transition:'background .3s'
+    });
+    editBtn.onmouseover = () => editBtn.style.background = '#f4f0ea';
+    editBtn.onmouseout  = () => editBtn.style.background = '#c9a84c';
+    link.parentNode.insertBefore(editBtn, link.nextSibling);
+
+    // Show/hide edit button based on whether the card is expanded
+    const card = link.closest('.item');
+    if (card) {
+          const observer = new MutationObserver(() => {
+            const items = document.querySelectorAll('.slide .item');
+            const isExpanded = items.length > 1 && items[1] === card;
+            editBtn.style.display = isExpanded ? 'inline-block' : 'none';
+          });
+          observer.observe(slide, { childList: true });
+        }
+  });
+  })();
+  </script>
+
+  <script>
+    /* Mobile nav */
+    (function(){
+      const btn     = document.getElementById('navHamburger');
+      const links   = document.querySelector('.nav-links');
+      const overlay = document.getElementById('navOverlay');
+      if (!btn) return;
+      function toggle(open) {
+        btn.classList.toggle('open', open);
+        links.classList.toggle('open', open);
+        overlay.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+      btn.addEventListener('click', () => toggle(!btn.classList.contains('open')));
+      overlay.addEventListener('click', () => toggle(false));
+      links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+    })();
   </script>
 
 </body>
