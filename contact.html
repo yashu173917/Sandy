@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="description" content="Book a photography session with Sandy Pixelz in Hyderabad. Reach out for weddings, portraits, newborns, and events."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Contact & Book — Sandy Pixelz"/>
+  <meta property="og:description" content="Book a photography session with Sandy Pixelz in Hyderabad. Reach out for weddings, portraits, newborns, and events."/>
+  <meta property="og:image" content="https://sandypixelz.com/images/contact.webp"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Contact & Book — Sandy Pixelz"/>
+  <meta name="twitter:description" content="Book a photography session with Sandy Pixelz in Hyderabad. Reach out for weddings, portraits, newborns, and events."/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sandy Pixelz — Contact</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -102,7 +111,7 @@
       width: 100%;
       max-width: 1000px;
       height: calc(100vh - 8rem);
-      max-height: 720px;
+      max-height: 860px;
       border-radius: 2px;
       overflow: hidden;
       border: 1px solid rgba(201,168,76,.22);
@@ -118,10 +127,12 @@
     /* LEFT — image panel */
     .glass-image {
       flex: 1;
+      min-width: 300px;
       position: relative;
       min-height: 0;
       overflow: hidden;
     }
+
     .glass-image img {
       width: 100%; height: 100%;
       object-fit: cover;
@@ -162,12 +173,13 @@
       opacity: .8;
     }
 
-    /* RIGHT — form panel */
+        /* RIGHT — form panel */
     .glass-form {
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       text-align: center;
       padding: 2rem 2.5rem;
@@ -320,8 +332,6 @@
     /* MOBILE */
     @media (max-width: 768px) {
       nav { padding: 1.2rem 1.5rem; }
-      .nav-links { gap: 1rem; }
-      .nav-links a { font-size: .7rem; letter-spacing: .08em; }
       .contact-hero {
         height: auto;
         min-height: 100vh;
@@ -332,10 +342,13 @@
         height: auto;
         max-height: none;
       }
+
       .glass-image {
         flex: none;
-        height: 35vh;
+        height: 40vh;
+        min-height: 220px;
         width: 100%;
+        max-width: 100%;
       }
       .glass-form {
         flex: 1;
@@ -351,12 +364,51 @@
       .glass-image { height: 25vh; }
       .glass-form { padding: 1.5rem 1rem; }
     }
+
+    /* ── HAMBURGER (mobile only) ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: transparent; border: none; cursor: pointer; padding: .3rem;
+      z-index: 501;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--white); transition: transform .3s, opacity .3s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+
+    @media (max-width: 768px) {
+      .nav-hamburger { display: flex; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 0;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 70vw; max-width: 280px;
+        background: rgba(13,13,13,.97); backdrop-filter: blur(16px);
+        padding: 5rem 2.5rem 2rem; z-index: 499;
+        border-left: 1px solid var(--border);
+        transition: transform .35s cubic-bezier(.25,.46,.45,.94);
+        transform: translateX(100%);
+      }
+      .nav-links.open { display: flex; transform: translateX(0); }
+      .nav-links li { border-bottom: 1px solid var(--border); }
+      .nav-links a { display: block; padding: 1rem 0; font-size: .85rem; letter-spacing: .12em; }
+      .nav-overlay {
+        display: none; position: fixed; inset: 0; z-index: 498;
+        background: rgba(0,0,0,.4);
+      }
+      .nav-overlay.open { display: block; }
+    }
+
+
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <nav>
+  <nav id="navbar">
     <a href="index.html" class="nav-logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -364,14 +416,18 @@
       </svg>
       Sandy <span>Pixelz</span>
     </a>
-    <ul class="nav-links">
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="packages.html">Packages</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
-  </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- HERO + GLASS CARD -->
   <section class="contact-hero">
@@ -451,10 +507,124 @@
     </div>
   </section>
 
+  <!-- ADMIN LOGIN BUTTON -->
+  <div style="text-align:center; padding: 4rem 0 2rem;">
+    <button onclick="document.getElementById('adminModal').style.display='flex'"
+      style="font-family:'Jost',sans-serif; font-size:.65rem; letter-spacing:.2em;
+      text-transform:uppercase; color:rgba(184,180,175,.25); background:transparent;
+      border:none; cursor:pointer; transition:color .3s;"
+      onmouseover="this.style.color='rgba(201,168,76,.5)'"
+      onmouseout="this.style.color='rgba(184,180,175,.25)'">
+      Admin
+    </button>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="adminModal" style="display:none; position:fixed; inset:0; z-index:9999;
+    background:rgba(13,13,13,.92); backdrop-filter:blur(12px);
+    align-items:center; justify-content:center;">
+    <div style="background:#141414; border:1px solid rgba(201,168,76,.2);
+      padding:3rem 2.5rem; width:100%; max-width:380px; text-align:center;">
+      <p style="font-family:'Cormorant Garamond',serif; font-size:1.6rem;
+        font-weight:300; color:#f4f0ea; margin-bottom:.4rem;">Editor Login</p>
+      <p style="font-size:.72rem; letter-spacing:.15em; color:#b8b4af;
+        text-transform:uppercase; margin-bottom:2rem;">Sandy Pixelz Admin</p>
+
+      <input id="adminUser" type="text" placeholder="Username"
+        style="width:100%; padding:.8rem 1rem; margin-bottom:.8rem;
+        background:#0d0d0d; border:1px solid rgba(201,168,76,.2);
+        color:#f4f0ea; font-family:'Jost',sans-serif; font-size:.85rem;
+        letter-spacing:.05em; outline:none;"
+        onfocus="this.style.borderColor='rgba(201,168,76,.6)'"
+        onblur="this.style.borderColor='rgba(201,168,76,.2)'"/>
+
+      <input id="adminPass" type="password" placeholder="Password"
+        style="width:100%; padding:.8rem 1rem; margin-bottom:1.4rem;
+        background:#0d0d0d; border:1px solid rgba(201,168,76,.2);
+        color:#f4f0ea; font-family:'Jost',sans-serif; font-size:.85rem;
+        letter-spacing:.05em; outline:none;"
+        onfocus="this.style.borderColor='rgba(201,168,76,.6)'"
+        onblur="this.style.borderColor='rgba(201,168,76,.2)'"
+        onkeydown="if(event.key==='Enter') adminLogin()"/>
+
+      <p id="adminErr" style="color:#c0392b; font-size:.72rem;
+        letter-spacing:.1em; margin-bottom:1rem; display:none;">
+        Incorrect credentials. Try again.
+      </p>
+
+      <button onclick="adminLogin()"
+        style="width:100%; padding:.85rem; background:#c9a84c; border:none;
+        font-family:'Jost',sans-serif; font-size:.75rem; letter-spacing:.2em;
+        text-transform:uppercase; color:#0d0d0d; cursor:pointer;
+        transition:background .3s; margin-bottom:.8rem;"
+        onmouseover="this.style.background='#f4f0ea'"
+        onmouseout="this.style.background='#c9a84c'">
+        Enter Editor Mode
+      </button>
+
+      <button onclick="document.getElementById('adminModal').style.display='none'"
+        style="background:transparent; border:none; color:#b8b4af;
+        font-size:.7rem; letter-spacing:.15em; text-transform:uppercase;
+        cursor:pointer; font-family:'Jost',sans-serif;">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // This is the SHA-256 hash of your password — not the password itself
+    // Generate your hash at: https://emn178.github.io/online-tools/sha256.html
+    const ADMIN_USER_HASH = 'aec6e9200847dcb045214f9a0e17921cf539b3e0718f2a2f76b6b6f8117e793b'; // hash of "sandy"
+    const ADMIN_PASS_HASH = '8dd9c29a0fcc57cef541b0955c449b43e61c13a80a4fc7e017bf2d76e7c31df1'; // hash of "pixelz2025"
+
+    async function adminLogin() {
+      const u = document.getElementById('adminUser').value.trim();
+      const p = document.getElementById('adminPass').value;
+
+      const hashU = await sha256(u);
+      const hashP = await sha256(p);
+
+      if (hashU === ADMIN_USER_HASH && hashP === ADMIN_PASS_HASH) {
+        sessionStorage.setItem('spEditor', 'true');
+        window.location.href = 'portfolio.html?editor=true';
+      } else {
+        document.getElementById('adminErr').style.display = 'block';
+      }
+    }
+
+    async function sha256(msg) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+  </script>
+
+
+
   <script>
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
   </script>
+
+  <script>
+    /* Mobile nav */
+    (function(){
+      const btn     = document.getElementById('navHamburger');
+      const links   = document.querySelector('.nav-links');
+      const overlay = document.getElementById('navOverlay');
+      if (!btn) return;
+      function toggle(open) {
+        btn.classList.toggle('open', open);
+        links.classList.toggle('open', open);
+        overlay.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+      btn.addEventListener('click', () => toggle(!btn.classList.contains('open')));
+      overlay.addEventListener('click', () => toggle(false));
+      links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+    })();
+  </script>
+
 
 </body>
 </html>
