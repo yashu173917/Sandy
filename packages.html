@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="description" content="Explore Sandy Pixelz photography packages starting at ₹12,000. Weddings, portraits, newborn, and full-day event coverage."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Packages — Sandy Pixelz"/>
+  <meta property="og:description" content="Explore Sandy Pixelz photography packages starting at ₹12,000. Weddings, portraits, newborn, and full-day event coverage."/>
+  <meta property="og:image" content="https://sandypixelz.com/images/wedding.webp"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Packages — Sandy Pixelz"/>
+  <meta name="twitter:description" content="Explore Sandy Pixelz photography packages starting at ₹12,000. Weddings, portraits, newborn, and full-day event coverage."/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sandy Pixelz — Packages</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -392,8 +401,6 @@
     }
     @media (max-width: 768px) {
       nav { padding: 1.2rem 1.5rem; }
-      .nav-links { gap: 1rem; }
-      .nav-links a { font-size: .7rem; letter-spacing: .08em; }
       .packages-section, .addons-section { padding: 3rem 1.5rem 4rem; }
       .note-strip { margin: 0 1.5rem 4rem; }
       .category-tabs { flex-wrap: wrap; }
@@ -401,12 +408,52 @@
     @media (max-width: 480px) {
       .addons-grid { grid-template-columns: 1fr 1fr; }
     }
+
+
+    /* ── HAMBURGER (mobile only) ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: transparent; border: none; cursor: pointer; padding: .3rem;
+      z-index: 501;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--white); transition: transform .3s, opacity .3s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+
+    @media (max-width: 768px) {
+      .nav-hamburger { display: flex; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 0;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 70vw; max-width: 280px;
+        background: rgba(13,13,13,.97); backdrop-filter: blur(16px);
+        padding: 5rem 2.5rem 2rem; z-index: 499;
+        border-left: 1px solid var(--border);
+        transition: transform .35s cubic-bezier(.25,.46,.45,.94);
+        transform: translateX(100%);
+      }
+      .nav-links.open { display: flex; transform: translateX(0); }
+      .nav-links li { border-bottom: 1px solid var(--border); }
+      .nav-links a { display: block; padding: 1rem 0; font-size: .85rem; letter-spacing: .12em; }
+      .nav-overlay {
+        display: none; position: fixed; inset: 0; z-index: 498;
+        background: rgba(0,0,0,.4);
+      }
+      .nav-overlay.open { display: block; }
+    }
+
+
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <nav>
+    <nav id="navbar">
     <a href="index.html" class="nav-logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:.5rem; vertical-align:middle; margin-bottom:.15rem;">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -414,14 +461,19 @@
       </svg>
       Sandy <span>Pixelz</span>
     </a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+  </nav>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="portfolio.html">Portfolio</a></li>
-      <li><a href="packages.html" class="active">Packages</a></li>
+      <li><a href="packages.html">Packages</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-  </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- HERO -->
   <section class="packages-hero">
@@ -575,21 +627,376 @@
   <script>
     window.history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
-
-    // function filterCards(category, btn) {
-    //   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    //   btn.classList.add('active');
-
-    //   document.querySelectorAll('.pkg-card').forEach(card => {
-    //     const cats = card.dataset.category || '';
-    //     if (category === 'all' || cats.includes(category)) {
-    //       card.style.display = 'flex';
-    //     } else {
-    //       card.style.display = 'none';
-    //     }
-    //   });
-    // }
   </script>
+
+  <!-- EDITOR MODE -->
+  <script>
+  (function () {
+    const isEditor = new URLSearchParams(location.search).has('editor')
+                  || sessionStorage.getItem('spEditor') === 'true';
+    if (!isEditor) return;
+
+    sessionStorage.setItem('spEditor', 'true');
+
+    /* ── inject editor styles ── */
+    const style = document.createElement('style');
+    style.textContent = `
+      .sp-edit-btn {
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.38rem .85rem; font-family:'Jost',sans-serif;
+        font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+        background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.5);
+        color:#c9a84c; cursor:pointer; transition:.25s; border-radius:2px;
+      }
+      .sp-edit-btn:hover { background:#c9a84c; color:#0d0d0d; }
+      .sp-delete-btn {
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.38rem .85rem; font-family:'Jost',sans-serif;
+        font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+        background:rgba(180,40,40,.15); border:1px solid rgba(180,40,40,.5);
+        color:#e06060; cursor:pointer; transition:.25s; border-radius:2px;
+      }
+      .sp-delete-btn:hover { background:#c0392b; color:#fff; }
+      .sp-card-actions {
+        display:flex; gap:.5rem; margin-top:.8rem; flex-wrap:wrap;
+      }
+      .sp-add-bar {
+        display:flex; justify-content:center; margin:1.5rem 0 .5rem;
+      }
+      /* modal */
+      .sp-overlay {
+        display:none; position:fixed; inset:0; z-index:9000;
+        background:rgba(0,0,0,.75); backdrop-filter:blur(4px);
+        align-items:center; justify-content:center;
+      }
+      .sp-overlay.open { display:flex; }
+      .sp-modal {
+        background:#141414; border:1px solid rgba(201,168,76,.25);
+        width:min(560px,92vw); max-height:88vh; overflow-y:auto;
+        padding:2.2rem 2rem; position:relative;
+      }
+      .sp-modal h3 {
+        font-family:'Cormorant Garamond',serif; font-size:1.6rem;
+        font-weight:300; color:#f4f0ea; margin-bottom:1.4rem;
+      }
+      .sp-modal h3 em { font-style:italic; color:#c9a84c; }
+      .sp-field { margin-bottom:1rem; }
+      .sp-field label {
+        display:block; font-size:.62rem; letter-spacing:.18em;
+        text-transform:uppercase; color:#b8b4af; margin-bottom:.35rem;
+      }
+      .sp-field input, .sp-field textarea {
+        width:100%; background:rgba(255,255,255,.05);
+        border:1px solid rgba(201,168,76,.2); color:#f4f0ea;
+        font-family:'Jost',sans-serif; font-size:.82rem;
+        padding:.55rem .75rem; outline:none; transition:border-color .2s;
+      }
+      .sp-field input:focus, .sp-field textarea:focus {
+        border-color:rgba(201,168,76,.6);
+      }
+      .sp-field textarea { resize:vertical; min-height:80px; }
+      .sp-features-list { list-style:none; margin-bottom:.6rem; }
+      .sp-features-list li {
+        display:flex; align-items:center; gap:.5rem;
+        font-size:.8rem; color:#f4f0ea; margin-bottom:.4rem;
+      }
+      .sp-features-list li button {
+        background:none; border:none; color:#e06060;
+        cursor:pointer; font-size:.85rem; line-height:1;
+      }
+      .sp-feat-add { display:flex; gap:.5rem; margin-bottom:1rem; }
+      .sp-feat-add input { flex:1; }
+      .sp-feat-add button { white-space:nowrap; }
+      .sp-modal-actions { display:flex; gap:.7rem; margin-top:1.4rem; justify-content:flex-end; }
+      .sp-save-btn {
+        padding:.6rem 1.6rem; font-family:'Jost',sans-serif;
+        font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+        background:#c9a84c; color:#0d0d0d; border:none; cursor:pointer; transition:.25s;
+      }
+      .sp-save-btn:hover { background:#f4f0ea; }
+      .sp-cancel-btn {
+        padding:.6rem 1.4rem; font-family:'Jost',sans-serif;
+        font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+        background:transparent; color:#b8b4af;
+        border:1px solid rgba(255,255,255,.12); cursor:pointer; transition:.25s;
+      }
+      .sp-cancel-btn:hover { color:#f4f0ea; border-color:rgba(255,255,255,.3); }
+      .sp-close-modal {
+        position:absolute; top:1rem; right:1.2rem;
+        background:none; border:none; color:#b8b4af;
+        font-size:1.3rem; cursor:pointer; line-height:1;
+      }
+      .sp-close-modal:hover { color:#f4f0ea; }
+      .sp-badge {
+        position:fixed; top:70px; right:20px; z-index:9999;
+        background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.4);
+        color:#f4f0ea; padding:.5rem 1rem; font-size:.7rem;
+        letter-spacing:.12em; text-transform:uppercase; font-family:'Jost',sans-serif;
+      }
+    `;
+    document.head.appendChild(style);
+
+    /* ── editor badge ── */
+    const badge = document.createElement('div');
+    badge.className = 'sp-badge';
+    badge.innerHTML = '✏️ Editor Mode — <a href="packages.html" onclick="sessionStorage.removeItem(\'spEditor\')" style="color:#c9a84c;">Exit</a>';
+    document.body.appendChild(badge);
+
+    /* ════════════════════════════════════════
+       MODAL
+    ════════════════════════════════════════ */
+    const overlay = document.createElement('div');
+    overlay.className = 'sp-overlay';
+    overlay.innerHTML = `
+      <div class="sp-modal">
+        <button class="sp-close-modal" id="spCloseModal">✕</button>
+        <h3 id="spModalTitle">Edit <em>Package</em></h3>
+        <div class="sp-field">
+          <label>Package Name</label>
+          <input id="spName" type="text" placeholder="e.g. Gold Signature"/>
+        </div>
+        <div class="sp-field">
+          <label>Tagline</label>
+          <input id="spTagline" type="text" placeholder="e.g. Our most loved experience"/>
+        </div>
+        <div class="sp-field">
+          <label>Price (numbers only, e.g. 28000)</label>
+          <input id="spPrice" type="text" placeholder="28000"/>
+        </div>
+        <div class="sp-field">
+          <label>Features</label>
+          <ul class="sp-features-list" id="spFeatList"></ul>
+          <div class="sp-feat-add">
+            <input id="spFeatInput" type="text" placeholder="Add a feature…"/>
+            <button class="sp-edit-btn" id="spFeatAddBtn">+ Add</button>
+          </div>
+        </div>
+        <div class="sp-modal-actions">
+          <button class="sp-cancel-btn" id="spCancelModal">Cancel</button>
+          <button class="sp-save-btn" id="spSaveModal">Save Changes</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    let currentCard = null;
+
+    function openModal(card) {
+      currentCard = card;
+      const isNew = !card;
+      document.getElementById('spModalTitle').innerHTML = isNew ? 'Add <em>Package</em>' : 'Edit <em>Package</em>';
+
+      document.getElementById('spName').value    = isNew ? '' : card.querySelector('.pkg-name').innerText.replace(/\n/g,'');
+      document.getElementById('spTagline').value = isNew ? '' : card.querySelector('.pkg-tagline').innerText;
+      document.getElementById('spPrice').value   = isNew ? '' : card.querySelector('.amount').innerText.replace(/[₹,]/g,'').trim();
+
+      const featList = document.getElementById('spFeatList');
+      featList.innerHTML = '';
+      if (!isNew) {
+        card.querySelectorAll('.pkg-features li').forEach(li => addFeatRow(li.innerText));
+      }
+      overlay.classList.add('open');
+    }
+
+    function addFeatRow(text) {
+      const li = document.createElement('li');
+      li.innerHTML = `<button onclick="this.parentNode.remove()">✕</button> <span>${text}</span>`;
+      document.getElementById('spFeatList').appendChild(li);
+    }
+
+    document.getElementById('spFeatAddBtn').onclick = () => {
+      const inp = document.getElementById('spFeatInput');
+      if (inp.value.trim()) { addFeatRow(inp.value.trim()); inp.value = ''; }
+    };
+    document.getElementById('spFeatInput').onkeydown = e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('spFeatAddBtn').click(); }
+    };
+
+    function closeModal() { overlay.classList.remove('open'); currentCard = null; }
+    document.getElementById('spCloseModal').onclick  = closeModal;
+    document.getElementById('spCancelModal').onclick = closeModal;
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+    document.getElementById('spSaveModal').onclick = () => {
+      const name    = document.getElementById('spName').value.trim();
+      const tagline = document.getElementById('spTagline').value.trim();
+      const price   = document.getElementById('spPrice').value.trim();
+      const feats   = [...document.getElementById('spFeatList').querySelectorAll('span')].map(s => s.innerText);
+
+      if (!name || !price) { alert('Name and price are required.'); return; }
+
+      // format name: last word becomes <em>
+      const words   = name.split(' ');
+      const nameHTML = words.length > 1
+        ? words.slice(0,-1).join(' ') + ' <em>' + words[words.length-1] + '</em>'
+        : name;
+
+      const priceNum = parseInt(price.replace(/,/g,''), 10).toLocaleString('en-IN');
+
+      if (currentCard) {
+        // UPDATE existing card
+        currentCard.querySelector('.pkg-name').innerHTML    = nameHTML;
+        currentCard.querySelector('.pkg-tagline').innerText = tagline;
+        currentCard.querySelector('.amount').innerHTML      = '<span class="currency">₹</span>' + priceNum;
+        const ul = currentCard.querySelector('.pkg-features');
+        ul.innerHTML = feats.map(f => `<li>${f}</li>`).join('');
+      } else {
+        // ADD new card
+        const card = buildCard(nameHTML, tagline, priceNum, feats);
+        document.getElementById('cardsGrid').appendChild(card);
+        attachCardActions(card);
+      }
+      closeModal();
+    };
+
+    function buildCard(nameHTML, tagline, price, feats) {
+      const div = document.createElement('div');
+      div.className = 'pkg-card';
+      div.dataset.category = 'wedding portrait event';
+      div.innerHTML = `
+        <div class="pkg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="pkg-name">${nameHTML}</div>
+        <div class="pkg-tagline">${tagline}</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">${feats.map(f=>`<li>${f}</li>`).join('')}</ul>
+        <div class="pkg-price">
+          <div class="amount"><span class="currency">₹</span>${price}</div>
+          <div class="note">Starting price · GST extra</div>
+        </div>
+        <a href="contact.html" class="pkg-btn">Book Now</a>`;
+      return div;
+    }
+
+    /* ════════════════════════════════════════
+       ADDON MODAL
+    ════════════════════════════════════════ */
+    const addonOverlay = document.createElement('div');
+    addonOverlay.className = 'sp-overlay';
+    addonOverlay.innerHTML = `
+      <div class="sp-modal">
+        <button class="sp-close-modal" id="spCloseAddon">✕</button>
+        <h3 id="spAddonTitle">Edit <em>Add-on</em></h3>
+        <div class="sp-field">
+          <label>Add-on Name</label>
+          <input id="spAddonName" type="text" placeholder="e.g. Drone / Aerial Shots"/>
+        </div>
+        <div class="sp-field">
+          <label>Price (e.g. ₹6,000)</label>
+          <input id="spAddonPrice" type="text" placeholder="₹6,000"/>
+        </div>
+        <div class="sp-modal-actions">
+          <button class="sp-cancel-btn" id="spCancelAddon">Cancel</button>
+          <button class="sp-save-btn" id="spSaveAddon">Save</button>
+        </div>
+      </div>`;
+    document.body.appendChild(addonOverlay);
+
+    let currentAddon = null;
+
+    function openAddonModal(item) {
+      currentAddon = item;
+      const isNew = !item;
+      document.getElementById('spAddonTitle').innerHTML = isNew ? 'Add <em>Add-on</em>' : 'Edit <em>Add-on</em>';
+      document.getElementById('spAddonName').value  = isNew ? '' : item.querySelector('.addon-name').innerText;
+      document.getElementById('spAddonPrice').value = isNew ? '' : item.querySelector('.addon-price').innerText;
+      addonOverlay.classList.add('open');
+    }
+
+    function closeAddonModal() { addonOverlay.classList.remove('open'); currentAddon = null; }
+    document.getElementById('spCloseAddon').onclick  = closeAddonModal;
+    document.getElementById('spCancelAddon').onclick = closeAddonModal;
+    addonOverlay.addEventListener('click', e => { if (e.target === addonOverlay) closeAddonModal(); });
+
+    document.getElementById('spSaveAddon').onclick = () => {
+      const name  = document.getElementById('spAddonName').value.trim();
+      const price = document.getElementById('spAddonPrice').value.trim();
+      if (!name || !price) { alert('Name and price are required.'); return; }
+
+      if (currentAddon) {
+        currentAddon.querySelector('.addon-name').innerText  = name;
+        currentAddon.querySelector('.addon-price').innerText = price;
+      } else {
+        const item = document.createElement('div');
+        item.className = 'addon-item';
+        item.innerHTML = `<div class="addon-name">${name}</div><div class="addon-price">${price}</div>`;
+        document.querySelector('.addons-grid').appendChild(item);
+        attachAddonActions(item);
+      }
+      closeAddonModal();
+    };
+
+    /* ════════════════════════════════════════
+       ATTACH ACTIONS TO CARDS
+    ════════════════════════════════════════ */
+    function attachCardActions(card) {
+      if (card.querySelector('.sp-card-actions')) return;
+      const bar = document.createElement('div');
+      bar.className = 'sp-card-actions';
+      bar.innerHTML = `
+        <button class="sp-edit-btn">✏ Edit Package</button>
+        <button class="sp-delete-btn">✕ Delete</button>`;
+      bar.querySelector('.sp-edit-btn').onclick   = () => openModal(card);
+      bar.querySelector('.sp-delete-btn').onclick = () => { if (confirm('Delete this package?')) card.remove(); };
+      card.appendChild(bar);
+    }
+
+    function attachAddonActions(item) {
+      if (item.querySelector('.sp-card-actions')) return;
+      const bar = document.createElement('div');
+      bar.className = 'sp-card-actions';
+      bar.innerHTML = `
+        <button class="sp-edit-btn">✏ Edit</button>
+        <button class="sp-delete-btn">✕ Delete</button>`;
+      bar.querySelector('.sp-edit-btn').onclick   = () => openAddonModal(item);
+      bar.querySelector('.sp-delete-btn').onclick = () => { if (confirm('Delete this add-on?')) item.remove(); };
+      item.appendChild(bar);
+    }
+
+    // attach to all existing cards & addons
+    document.querySelectorAll('.pkg-card').forEach(attachCardActions);
+    document.querySelectorAll('.addon-item').forEach(attachAddonActions);
+
+    // "Add Package" button
+    const addPkgBar = document.createElement('div');
+    addPkgBar.className = 'sp-add-bar';
+    addPkgBar.innerHTML = '<button class="sp-edit-btn" style="font-size:.7rem;padding:.6rem 1.6rem;">+ Add New Package</button>';
+    addPkgBar.querySelector('button').onclick = () => openModal(null);
+    document.getElementById('cardsGrid').after(addPkgBar);
+
+    // "Add Add-on" button
+    const addAddonBar = document.createElement('div');
+    addAddonBar.className = 'sp-add-bar';
+    addAddonBar.innerHTML = '<button class="sp-edit-btn" style="font-size:.7rem;padding:.6rem 1.6rem;">+ Add New Add-on</button>';
+    addAddonBar.querySelector('button').onclick = () => openAddonModal(null);
+    document.querySelector('.addons-grid').after(addAddonBar);
+
+  })();
+  </script>
+
+
+  <script>
+    /* Mobile nav */
+    (function(){
+      const btn     = document.getElementById('navHamburger');
+      const links   = document.querySelector('.nav-links');
+      const overlay = document.getElementById('navOverlay');
+      if (!btn) return;
+      function toggle(open) {
+        btn.classList.toggle('open', open);
+        links.classList.toggle('open', open);
+        overlay.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+      btn.addEventListener('click', () => toggle(!btn.classList.contains('open')));
+      overlay.addEventListener('click', () => toggle(false));
+      links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+    })();
+  </script>
+
 
 </body>
 </html>
